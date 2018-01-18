@@ -1,5 +1,7 @@
 package hht.dragon.server;
 
+import hht.dragon.server.request.SimpleServletRequest;
+import hht.dragon.server.request.SimpleServletRequestImpl;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,10 +35,12 @@ public class Server {
                 InputStream input = client.getInputStream();
                 BufferedInputStream buffer = new BufferedInputStream(input);
                 OutputStream output = client.getOutputStream();
-                HttpRequest request = new HttpRequest();
-                request.getRequest(buffer);
+                SimpleServletRequest request = new SimpleServletRequestImpl(input);
                 HttpResponse response = new HttpResponse();
-                response.respon(output, request.getUri());
+                for (String key : request.getParameterNames()) {
+                    System.out.println(key + " : " + request.getParameter(key));
+                }
+                response.respon(output, request.getRequestURI());
                 buffer.close();
                 input.close();
                 output.close();

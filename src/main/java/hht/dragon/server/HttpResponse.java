@@ -1,6 +1,7 @@
 package hht.dragon.server;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -32,7 +33,15 @@ public class HttpResponse {
     }
 
     public void getFile(String path, OutputStream out) throws IOException {
-        FileInputStream fis = new FileInputStream(path);
+        FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            path = "html/error/404.html";
+            fis = new FileInputStream(path);
+        }
+
         int len = 0;
         byte[] buffer = new byte[1024];
         while ((len = fis.read(buffer)) != -1) {
