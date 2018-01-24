@@ -42,7 +42,7 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
     private void setRequestType(String context) {
         for (HttpRequestType type : HttpRequestType.values()) {
             if (context.startsWith(type.getValue())) {
-                   this.requestType = type.getValue();
+                this.requestType = type.getValue();
             }
         }
     }
@@ -51,7 +51,7 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
         if (context.startsWith(this.requestType + BLANK)) {
             index = context.indexOf("HTTP/1.1");
             uri = context.substring(context.indexOf(this.requestType + BLANK) + this.requestType.length() + 2, index - 1);
-            if (HttpRequestType.GET.equals(this.requestType)) {
+            if (HttpRequestType.GET.equals(this.requestType) && uri.contains("?")) {
                 paramsForGet = uri.substring(uri.indexOf("?") + 1);
                 uri = uri.substring(0, uri.indexOf("?"));
             }
@@ -60,11 +60,11 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
     }
 
     private void setHeaders(String context) {
-        //TODO 不能仅仅只靠冒号切分
+        // TODO 不能仅仅只靠冒号切分
     }
 
     private void setParams() {
-        if (HttpRequestType.GET.equals(this.requestType)) {
+        if (HttpRequestType.GET.equals(this.requestType) && uri.contains("?")) {
             String[] ps = this.paramsForGet.split("&");
             for (String s : ps) {
                 String[] kv = s.split("=");

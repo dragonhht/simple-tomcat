@@ -40,6 +40,7 @@ public class Server {
                 for (String key : request.getParameterNames()) {
                     System.out.println(key + " : " + request.getParameter(key));
                 }
+                System.out.println(request.getHeader(""));
                 response.respon(output, request.getRequestURI());
                 buffer.close();
                 input.close();
