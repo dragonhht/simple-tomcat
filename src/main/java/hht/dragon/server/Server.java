@@ -2,10 +2,9 @@ package hht.dragon.server;
 
 import hht.dragon.server.request.SimpleServletRequest;
 import hht.dragon.server.request.SimpleServletRequestImpl;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import hht.dragon.server.request.SimpleServletRequestImpl2;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -32,20 +31,17 @@ public class Server {
         if (server != null) {
             while (true) {
                 client = server.accept();
-                InputStream input = client.getInputStream();
-                BufferedInputStream buffer = new BufferedInputStream(input);
                 OutputStream output = client.getOutputStream();
-                SimpleServletRequest request = new SimpleServletRequestImpl(input);
+/*                BufferedInputStream buffer = new BufferedInputStream(input);
+                SimpleServletRequest request = new SimpleServletRequestImpl(input);*/
+                SimpleServletRequest request = new SimpleServletRequestImpl2(client);
                 HttpResponse response = new HttpResponse();
                 for (String key : request.getParameterNames()) {
                     System.out.println(key + " : " + request.getParameter(key));
                 }
-                System.out.println(request.getHeader(""));
                 response.respon(output, request.getRequestURI());
-                buffer.close();
-                input.close();
+//                buffer.close();
                 output.close();
-                client.close();
             }
         } else {
             System.out.println("服务未开启....");
