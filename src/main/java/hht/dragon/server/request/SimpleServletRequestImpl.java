@@ -1,5 +1,6 @@
 package hht.dragon.server.request;
 
+import hht.dragon.server.params.ContentType;
 import hht.dragon.server.params.HttpRequestType;
 
 import java.io.IOException;
@@ -60,10 +61,22 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
     }
 
     private void setHeaders(String context) {
-        // TODO 不能仅仅只靠冒号切分
+        String[] ss = context.split("\n");
+        String key = null, value = null;
+        int index = 0;
+        for (String s : ss) {
+            if (s.contains(": ")) {
+                index = s.indexOf(": ");
+                key = s.substring(0, index);
+                key = key.replace("-", "");
+                value = s.substring(index + 2);
+                headers.put(key, value);
+            }
+        }
     }
 
     private void setParams() {
+        // Get
         if (HttpRequestType.GET.equals(this.requestType) && uri.contains("?")) {
             String[] ps = this.paramsForGet.split("&");
             for (String s : ps) {
@@ -71,6 +84,34 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
                 params.put(kv[0], kv[1]);
             }
         }
+        // Post
+        if (HttpRequestType.POST.equals(this.requestType)) {
+            String contentType = headers.get("ContentType");
+            System.out.println("leixing: " + contentType);
+            for (ContentType type : ContentType.values()) {
+                // TODO 多类型
+                if (contentType.contains(type.getValue())) {
+                    getParamsForPost(type);
+                }
+            }
+        }
+    }
+
+    private Map<String, String> getParamsForPost(ContentType type) {
+        Map<String, String> map = new HashMap<>();
+        switch (type) {
+            case FORM:
+                // TODO FORM
+
+            case XW:
+                // TODO XW
+
+            case BINARY:
+                // TODO BINARY
+
+            default: break;
+        }
+        return map;
     }
 
     /**
@@ -104,7 +145,7 @@ public class SimpleServletRequestImpl implements SimpleServletRequest {
 
     @Override
     public String getHeader(String name) {
-        return null;
+        return headers.get(name);
     }
 
     @Override

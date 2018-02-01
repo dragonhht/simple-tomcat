@@ -1,19 +1,22 @@
 package hht.dragon.server.params;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Http请求类型.
+ * ContentType.
  *
  * @author: huang
- * Date: 18-1-18
+ * Date: 18-2-1
  */
-public enum HttpRequestType {
-
-    GET("GET"), POST("POST"), OPTIONS("OPTIONS"), HEAD("HEAD"),
-    PUT("PUT"), DELETE("DELETE"), TRACE("TRACE"), CONNECT("CONNECT");
+public enum ContentType {
+    FORM("form-data"),
+    XW("application/x-www-form-urlencoded"),
+    BINARY("text/plain");
 
     private String value;
 
-    HttpRequestType(String value) {
+    ContentType(String value) {
         this.value = value;
     }
 
@@ -24,5 +27,4 @@ public enum HttpRequestType {
     public boolean equals(String s) {
         return value.equalsIgnoreCase(s);
     }
-
 }
