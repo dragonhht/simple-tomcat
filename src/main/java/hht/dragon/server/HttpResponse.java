@@ -22,7 +22,6 @@ public class HttpResponse {
         outStr.append("HTTP/1.1 200 OK\n");
         outStr.append("Content-Type: text/html;charset=UTF-8\n");
         outStr.append("\r\n");
-        System.out.println("----" + outStr.toString());
         try {
             out.write(outStr.toString().getBytes());
             getFile(path, out);
@@ -33,11 +32,11 @@ public class HttpResponse {
     }
 
     public void getFile(String path, OutputStream out) throws IOException {
+        if (path == null) return;
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(path);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             path = "html/error/404.html";
             fis = new FileInputStream(path);
         }

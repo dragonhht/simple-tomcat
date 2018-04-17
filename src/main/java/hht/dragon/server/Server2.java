@@ -33,17 +33,21 @@ public class Server2 {
     public void start() throws IOException {
         if (server != null) {
             while (true) {
-                client = server.accept();
-                OutputStream output = client.getOutputStream();
-                InputStream input = client.getInputStream();
-                BufferedInputStream buffer = new BufferedInputStream(input);
-                SimpleServletRequest request = new SimpleServletRequestImpl(buffer);
-                HttpResponse response = new HttpResponse();
-                response.respon(output, request.getRequestURI());
-                buffer.close();
-                input.close();
-                output.close();
-                client.close();
+                try {
+                    client = server.accept();
+                    OutputStream output = client.getOutputStream();
+                    InputStream input = client.getInputStream();
+                    BufferedInputStream buffer = new BufferedInputStream(input);
+                    SimpleServletRequest request = new SimpleServletRequestImpl(buffer);
+                    HttpResponse response = new HttpResponse();
+                    response.respon(output, request.getRequestURI());
+                    buffer.close();
+                    input.close();
+                    output.close();
+                    client.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             System.out.println("服务未开启....");
