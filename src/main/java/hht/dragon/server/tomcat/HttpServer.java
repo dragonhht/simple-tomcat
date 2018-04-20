@@ -1,14 +1,13 @@
 package hht.dragon.server.tomcat;
 
-import hht.dragon.server.tomcat.Processor.ServletProcessor;
-import hht.dragon.server.tomcat.Processor.StaticResourceProcessor;
+import hht.dragon.server.tomcat.Processor.ServletDoProcessor;
+import hht.dragon.server.tomcat.Processor.StaticResourceDoProcessor;
 import hht.dragon.server.tomcat.request.Request;
 import hht.dragon.server.tomcat.response.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -53,11 +52,11 @@ public class HttpServer {
                 response.setRequest(request);
 
                 if (request.getUri().startsWith("/servlet/")) {
-                    ServletProcessor processor = new ServletProcessor();
+                    ServletDoProcessor processor = new ServletDoProcessor();
                     processor.process(request, response);
                     continue;
                 }
-                StaticResourceProcessor processor = new StaticResourceProcessor();
+                StaticResourceDoProcessor processor = new StaticResourceDoProcessor();
                 processor.process(request, response);
 
             } catch (IOException e) {

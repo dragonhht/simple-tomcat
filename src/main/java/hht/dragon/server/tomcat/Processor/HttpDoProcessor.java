@@ -9,7 +9,7 @@ import hht.dragon.server.tomcat.response.Response;
  * @author: huang
  * Date: 2018/4/20
  */
-public interface HttpProcessor {
+public interface HttpDoProcessor {
 
     void process(Request request, Response response);
 

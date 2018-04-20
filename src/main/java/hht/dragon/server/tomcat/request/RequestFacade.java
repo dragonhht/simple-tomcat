@@ -1,9 +1,12 @@
 package hht.dragon.server.tomcat.request;
 
 import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -14,12 +17,173 @@ import java.util.Map;
  * @author: huang
  * Date: 2018/4/20
  */
-public class RequestFacade implements ServletRequest {
+public class RequestFacade implements HttpServletRequest {
 
     private Request request;
 
     public RequestFacade(Request request) {
         this.request = request;
+    }
+
+
+    @Override
+    public String getAuthType() {
+        return this.request.getAuthType();
+    }
+
+    @Override
+    public Cookie[] getCookies() {
+        return this.request.getCookies();
+    }
+
+    @Override
+    public long getDateHeader(String name) {
+        return this.request.getDateHeader(name);
+    }
+
+    @Override
+    public String getHeader(String name) {
+        return this.request.getHeader(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaders(String name) {
+        return this.request.getHeaders(name);
+    }
+
+    @Override
+    public Enumeration<String> getHeaderNames() {
+        return this.request.getHeaderNames();
+    }
+
+    @Override
+    public int getIntHeader(String name) {
+        return this.request.getIntHeader(name);
+    }
+
+    @Override
+    public String getMethod() {
+        return this.request.getMethod();
+    }
+
+    @Override
+    public String getPathInfo() {
+        return this.request.getPathInfo();
+    }
+
+    @Override
+    public String getPathTranslated() {
+        return this.request.getPathTranslated();
+    }
+
+    @Override
+    public String getContextPath() {
+        return this.request.getContextPath();
+    }
+
+    @Override
+    public String getQueryString() {
+        return this.request.getQueryString();
+    }
+
+    @Override
+    public String getRemoteUser() {
+        return this.request.getRemoteUser();
+    }
+
+    @Override
+    public boolean isUserInRole(String role) {
+        return this.request.isUserInRole(role);
+    }
+
+    @Override
+    public Principal getUserPrincipal() {
+        return this.request.getUserPrincipal();
+    }
+
+    @Override
+    public String getRequestedSessionId() {
+        return this.request.getRequestedSessionId();
+    }
+
+    @Override
+    public String getRequestURI() {
+        return this.request.getRequestURI();
+    }
+
+    @Override
+    public StringBuffer getRequestURL() {
+        return this.request.getRequestURL();
+    }
+
+    @Override
+    public String getServletPath() {
+        return this.request.getServletPath();
+    }
+
+    @Override
+    public HttpSession getSession(boolean create) {
+        return this.request.getSession(create);
+    }
+
+    @Override
+    public HttpSession getSession() {
+        return this.request.getSession();
+    }
+
+    @Override
+    public String changeSessionId() {
+        return this.request.changeSessionId();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdValid() {
+        return this.request.isRequestedSessionIdValid();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromCookie() {
+        return this.request.isRequestedSessionIdFromCookie();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromURL() {
+        return this.request.isRequestedSessionIdFromURL();
+    }
+
+    @Override
+    public boolean isRequestedSessionIdFromUrl() {
+        return this.request.isRequestedSessionIdFromUrl();
+    }
+
+    @Override
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+        return this.request.authenticate(response);
+    }
+
+    @Override
+    public void login(String username, String password) throws ServletException {
+        this.request.login(username, password);
+    }
+
+    @Override
+    public void logout() throws ServletException {
+        this.request.logout();
+    }
+
+    @Override
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return this.request.getParts();
+    }
+
+    @Override
+    public Part getPart(String name) throws IOException, ServletException {
+        return this.request.getPart(name);
+    }
+
+    @Override
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
+        return this.request.upgrade(handlerClass);
     }
 
     @Override

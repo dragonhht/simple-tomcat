@@ -19,7 +19,7 @@ import java.net.URLStreamHandler;
  * @author: huang
  * Date: 2018/4/20
  */
-public class ServletProcessor implements HttpProcessor {
+public class ServletDoProcessor implements HttpDoProcessor {
     @Override
     public void process(Request request, Response response) {
         String uri = request.getUri();
