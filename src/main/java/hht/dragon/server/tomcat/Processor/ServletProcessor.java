@@ -2,7 +2,9 @@ package hht.dragon.server.tomcat.Processor;
 
 import hht.dragon.server.tomcat.constants.Constants;
 import hht.dragon.server.tomcat.request.Request;
+import hht.dragon.server.tomcat.request.RequestFacade;
 import hht.dragon.server.tomcat.response.Response;
+import hht.dragon.server.tomcat.response.ResponseFacade;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -46,8 +48,10 @@ public class ServletProcessor implements HttpProcessor {
         Servlet servlet = null;
 
         try {
+            RequestFacade requestFacade = new RequestFacade(request);
+            ResponseFacade responseFacade = new ResponseFacade(response);
             servlet = (Servlet) myClass.newInstance();
-            servlet.service(request, response);
+            servlet.service(requestFacade, responseFacade);
         } catch (Exception e) {
             e.printStackTrace();
         }
