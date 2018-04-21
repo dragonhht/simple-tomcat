@@ -18,47 +18,20 @@ import java.util.*;
 public class Request implements HttpServletRequest {
 
     private InputStream input;
-    private String uri;
     private String httpContent;
 
     private HashMap headers = new HashMap();
     private ArrayList cookies = new ArrayList();
 
+    private String method;
+    private String protocol;
+    private String queryString;
+    private String requestURI;
+    private String requestedSessionId;
+    private boolean requestedSessionURL;
+
     public Request(InputStream input) {
         this.input = input;
-    }
-
-    /**
-     * 初始化.
-     */
-    public void init() {
-        this.httpContent = getHttpContext();
-        if (this.httpContent == null) {
-            return;
-        }
-        this.uri = initUri();
-    }
-
-    /**
-     * 获取http内容.
-     */
-    private String getHttpContext() {
-        String httpContext = null;
-        int len;
-        int byteLen = 1024;
-        byte[] bufferByte = new byte[byteLen];
-        try {
-            len = input.read(bufferByte);
-            if (len > 0) {
-                httpContext = new String(bufferByte);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(httpContext);
-
-        return httpContext;
     }
 
     /**
@@ -70,22 +43,6 @@ public class Request implements HttpServletRequest {
 
     public void addCookie() {
 
-    }
-
-    private String initUri() {
-        int index1, index2;
-        index1 = this.httpContent.indexOf(' ');
-        if (index1 != -1) {
-            index2 = this.httpContent.indexOf(' ' , index1 + 1);
-            if (index2 > index1) {
-                return this.httpContent.substring(index1 + 1, index2);
-            }
-        }
-        return null;
-    }
-
-    public String getUri() {
-        return this.uri;
     }
 
     @Override
@@ -125,7 +82,7 @@ public class Request implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-        return null;
+        return this.method;
     }
 
     @Override
@@ -165,12 +122,12 @@ public class Request implements HttpServletRequest {
 
     @Override
     public String getRequestedSessionId() {
-        return null;
+        return this.requestedSessionId;
     }
 
     @Override
     public String getRequestURI() {
-        return null;
+        return this.requestURI;
     }
 
     @Override
@@ -310,7 +267,7 @@ public class Request implements HttpServletRequest {
 
     @Override
     public String getProtocol() {
-        return null;
+        return this.protocol;
     }
 
     @Override
@@ -431,5 +388,26 @@ public class Request implements HttpServletRequest {
     @Override
     public DispatcherType getDispatcherType() {
         return null;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
+    }
+
+    public void setRequestSessionId(String id) {
+        this.requestedSessionId = id;
+    }
+
+    public void setRequestedSessionURL(boolean flag) {
+        requestedSessionURL = flag;
+    }
+    public void setMethod(String method) {
+        this.method = method;
+    }
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
+    public void setRequestURI(String requestURI) {
+        this.requestURI = requestURI;
     }
 }

@@ -14,7 +14,7 @@ public class StaticResourceDoProcessor implements HttpDoProcessor {
 
     @Override
     public void process(Request request, Response response) {
-        String uri = request.getUri();
+        String uri = request.getRequestURI();
         response.senStaticResource(uri);
     }
 }

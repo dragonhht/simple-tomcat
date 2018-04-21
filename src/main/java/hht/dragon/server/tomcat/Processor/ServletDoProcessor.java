@@ -22,7 +22,7 @@ import java.net.URLStreamHandler;
 public class ServletDoProcessor implements HttpDoProcessor {
     @Override
     public void process(Request request, Response response) {
-        String uri = request.getUri();
+        String uri = request.getRequestURI();
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
         try {

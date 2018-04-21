@@ -98,9 +98,9 @@ public class SocketInputStream extends InputStream {
                             newBuffer, 0, maxRead);
                     requestLine.method = newBuffer;
                     maxRead = requestLine.method.length;
+                }else {
+                    throw new IOException();
                 }
-            } else {
-                throw new IOException();
             }
 
             // 判断读取的位置是否在读取范围内
@@ -139,9 +139,9 @@ public class SocketInputStream extends InputStream {
                             newBuffer, 0, maxRead);
                     requestLine.uri = newBuffer;
                     maxRead = requestLine.uri.length;
+                } else {
+                    throw new IOException();
                 }
-            } else {
-                throw new IOException();
             }
 
             // 判断读取的位置是否在读取范围内
@@ -164,7 +164,7 @@ public class SocketInputStream extends InputStream {
         requestLine.uriEnd = readCount - 1;
 
         // 读取协议信息
-        maxRead = requestLine.uri.length;
+        maxRead = requestLine.protocol.length;
         readStart = pos;
         readCount = 0;
         spance = false;
@@ -177,9 +177,9 @@ public class SocketInputStream extends InputStream {
                             newBuffer, 0, maxRead);
                     requestLine.protocol = newBuffer;
                     maxRead = requestLine.protocol.length;
+                } else {
+                    throw new IOException();
                 }
-            } else {
-                throw new IOException();
             }
             // 判断读取的位置是否在读取范围内
             if (pos >= count) {
@@ -224,9 +224,17 @@ public class SocketInputStream extends InputStream {
     private void fill() throws IOException {
         pos = 0;
         count = 0;
-        int len = is.read(buf, 0, buf.length);
+        int len = is.read(buf);
         if (len > 0) {
             count = len;
         }
+    }
+
+    public void close() throws IOException {
+        if (is == null)
+            return;
+        is.close();
+        is = null;
+        buf = null;
     }
 }
