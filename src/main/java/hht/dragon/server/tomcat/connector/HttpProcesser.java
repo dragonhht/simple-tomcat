@@ -34,9 +34,9 @@ public class HttpProcesser {
             request = new Request(socketInputStream);
 
             // 解析http
-            parseRequest(socketInputStream, output);
-
-//            if (request.getUri() == null) return;
+            parseRequest(socketInputStream);
+            // 解析请求信息
+            parseHeaders(socketInputStream);
 
             Response response = new Response(output);
             response.setRequest(request);
@@ -49,11 +49,11 @@ public class HttpProcesser {
                 processor.process(request, response);
             }
 
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (ServletException e) {
             e.printStackTrace();
-        } finally {
+        } catch (IOException e) {
+            e.printStackTrace();
+        }  finally {
             if (socket != null) {
                 try {
                     socket.close();
@@ -67,10 +67,9 @@ public class HttpProcesser {
     /**
      * 解析请求行.
      * @param input
-     * @param output
      * @throws IOException
      */
-    private void parseRequest(SocketInputStream input, OutputStream output) throws IOException, ServletException {
+    private void parseRequest(SocketInputStream input) throws IOException, ServletException {
         input.readRequestLine(requestLine);
         String method = requestLine.getMethod();
         String uri = null;
@@ -125,7 +124,7 @@ public class HttpProcesser {
             request.setRequestSessionId(null);
         }
 
-        // 处理标准的相对uri
+        // 处理为标准的相对uri
         String normalizedUri = normalize(uri);
         request.setMethod(method);
         request.setProtocol(protocol);
@@ -140,11 +139,53 @@ public class HttpProcesser {
     }
 
     /**
+     * 解析请求信息
+     * @param input
+     * @throws IOException
+     * @throws ServletException
+     */
+    private void parseHeaders(SocketInputStream input)
+            throws IOException, ServletException {
+        // 循环获取
+        while (true) {
+            HttpHeader header = new HttpHeader();
+
+            input.readHeader(header);
+            if (header.nameEnd == 0) {
+                if (header.valueEnd == 0) {
+                    return;
+                } else {
+                    throw new ServletException();
+                }
+            }
+            String name = header.getName();
+            String value = header.getValue();
+            request.addHeader(name, value);
+
+            if (name.equals("cookie")) {
+
+                // TODO 保存cookie
+
+            } else if (name.equals("content-length")) {
+                int n = -1;
+                try {
+                    n = Integer.parseInt(value);
+                } catch (Exception e) {
+                    throw new ServletException();
+                }
+                request.setContentLength(n);
+            } else if (name.equals("content-type")) {
+                request.setContentType(value);
+            }
+        }
+    }
+
+    /**
      * 处理标准的相对uri。
      * @param path
      * @return
      */
-    protected String normalize(String path) {
+    private String normalize(String path) {
         if (path == null)
             return null;
         String normalized = path;

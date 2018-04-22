@@ -204,6 +204,158 @@ public class SocketInputStream extends InputStream {
         requestLine.protocolEnd = readCount;
     }
 
+    /**
+     * 读取Http的请求头信息.
+     * @param header
+     * @throws IOException
+     */
+    public void readHeader(HttpHeader header) throws IOException {
+        if (header.nameEnd != 0)
+            header.recycle();
+
+        int chr = read();
+        if (chr == CR || chr == LF) {
+            // 遇到 CR 则表示一行已结束(跳过 LF)
+            if (chr == CR)
+                read();
+            header.nameEnd = 0;
+            header.valueEnd = 0;
+            return;
+        } else {
+            pos--;
+        }
+
+        // 读取请求头信息的name
+        int maxRead = header.name.length;
+        int readStart = pos;
+        int readCount = 0;
+
+        boolean colon = false;
+
+        while (!colon) {
+            if (readCount >= maxRead) {
+                if (2 * maxRead <= HttpHeader.MAX_NAME_SIZE) {
+                    char[] newBuf = new char[2 * maxRead];
+                    System.arraycopy(header, 0, newBuf, 0, maxRead);
+                    header.name = newBuf;
+                    maxRead = header.name.length;
+                } else {
+                    throw new EOFException();
+                }
+            }
+
+            if (pos >= count) {
+                int val = read();
+                if (val == -1)
+                    throw new IOException();
+                pos = 0;
+                readStart = 0;
+            }
+            if (buf[pos] == COLON)
+                colon = true;
+
+            char val = (char) buf[pos];
+            if ((val >= 'A') && (val <= 'Z') ) {
+                // 转为小写
+                val = (char) (val - LC_OFFSET);
+            }
+            header.name[readCount] = val;
+            pos++;
+            readCount++;
+        }
+        header.nameEnd = readCount - 1;
+
+        // 读取请求头信息的value
+
+        maxRead = header.value.length;
+        readStart = pos;
+        readCount = 0;
+
+        int crPos = -2;
+
+        boolean eol = false;
+        boolean validLine = true;
+
+        while (validLine) {
+
+            boolean space = false;
+
+            // 跳过空格
+            while (!space) {
+                if (pos >= count) {
+                    int val = read();
+                    if (val == -1)
+                        throw new IOException();
+                    pos = 0;
+                    readStart = 0;
+                }
+                if ((buf[pos] == SP) || (buf[pos] == HT)) {
+                    pos++;
+                } else {
+                    space = true;
+                }
+            }
+
+            // 读取值
+            while (!eol) {
+                if (readCount >= maxRead) {
+                    if ((2 * maxRead) <= HttpHeader.MAX_VALUE_SIZE) {
+                        char[] newBuf = new char[2 * maxRead];
+                        System.arraycopy(header.value, 0, newBuf, 0, maxRead);
+                        header.value = newBuf;
+                        maxRead = header.value.length;
+                    } else {
+                        throw new IOException();
+                    }
+                }
+
+                if (pos >= count) {
+                    int val = read();
+                    if (val == -1)
+                        throw new IOException();
+                    pos = 0;
+                    readStart = 0;
+                }
+
+                if (buf[pos] == CR) {
+
+                } else if (buf[pos] ==LF) {
+                    eol = true;
+                } else {
+                    int ch = buf[pos] & 0xff;
+                    header.value[readCount] = (char) ch;
+                    readCount++;
+                }
+                pos++;
+            }
+
+            int nextChr = read();
+
+            if ((nextChr != SP) && (nextChr != HT)) {
+                pos--;
+                validLine = false;
+            } else {
+                eol = false;
+                if (readCount >= maxRead) {
+                    if ((2 * maxRead) <= HttpHeader.MAX_VALUE_SIZE) {
+                        char[] newBuffer = new char[2 * maxRead];
+                        System.arraycopy(header.value, 0, newBuffer, 0,
+                                maxRead);
+                        header.value = newBuffer;
+                        maxRead = header.value.length;
+                    } else {
+                        throw new IOException();
+                    }
+                }
+                header.value[readCount] = ' ';
+                readCount++;
+            }
+        }
+
+        header.valueEnd = readCount;
+
+    }
+
     @Override
     public int read() throws IOException {
         if (pos >= count) {

@@ -13,3 +13,9 @@
     - 使用[SocketInputStream](./src/main/java/hht/dragon/server/tomcat/connector/SocketInputStream.java)辅助获取HTTP请求信息
     
     - 在[HttpProcesser](./src/main/java/hht/dragon/server/tomcat/connector/HttpProcesser.java)中使用方法`parseRequest`解析请求行
+    
+-   参照tocmat4解析请求信息
+
+    - 使用[HttpHeader](./src/main/java/hht/dragon/server/tomcat/connector/HttpHeader.java)保存请求头信息
+    
+    - 在[HttpProcesser](./src/main/java/hht/dragon/server/tomcat/connector/HttpProcesser.java)中使用方法`parseHeaders`解析请求头信息

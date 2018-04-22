@@ -29,6 +29,8 @@ public class Request implements HttpServletRequest {
     private String requestURI;
     private String requestedSessionId;
     private boolean requestedSessionURL;
+    private String contentType;
+    private int contentLength;
 
     public Request(InputStream input) {
         this.input = input;
@@ -37,8 +39,16 @@ public class Request implements HttpServletRequest {
     /**
      * 添加头信息.
      */
-    public void addHeader(String key, Object value) {
-        headers.put(key, value);
+    public void addHeader(String key, String value) {
+        key = key.toLowerCase();
+        synchronized (headers) {
+            ArrayList values = (ArrayList) headers.get(key);
+            if (values == null) {
+                values = new ArrayList();
+                headers.put(key, values);
+            }
+            values.add(value);
+        }
     }
 
     public void addCookie() {
@@ -227,17 +237,17 @@ public class Request implements HttpServletRequest {
 
     @Override
     public int getContentLength() {
-        return 0;
+        return this.contentLength;
     }
 
     @Override
     public long getContentLengthLong() {
-        return 0;
+        return this.contentLength;
     }
 
     @Override
     public String getContentType() {
-        return null;
+        return this.contentType;
     }
 
     @Override
@@ -409,5 +419,13 @@ public class Request implements HttpServletRequest {
     }
     public void setRequestURI(String requestURI) {
         this.requestURI = requestURI;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setContentLength(int contentLength) {
+        this.contentLength = contentLength;
     }
 }
