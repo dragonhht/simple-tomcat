@@ -21,7 +21,7 @@ public class Request implements HttpServletRequest {
     private String httpContent;
 
     private HashMap headers = new HashMap();
-    private ArrayList cookies = new ArrayList();
+    private ArrayList<Cookie> cookies = new ArrayList<>();
 
     private String method;
     private String protocol;
@@ -29,6 +29,7 @@ public class Request implements HttpServletRequest {
     private String requestURI;
     private String requestedSessionId;
     private boolean requestedSessionURL;
+    private boolean requestedSessionCookie;
     private String contentType;
     private int contentLength;
 
@@ -51,8 +52,10 @@ public class Request implements HttpServletRequest {
         }
     }
 
-    public void addCookie() {
-
+    public void addCookie(Cookie cookie) {
+        synchronized (cookies) {
+            cookies.add(cookie);
+        }
     }
 
     @Override
@@ -427,5 +430,9 @@ public class Request implements HttpServletRequest {
 
     public void setContentLength(int contentLength) {
         this.contentLength = contentLength;
+    }
+
+    public void setRequestedSessionCookie(boolean flag) {
+        this.requestedSessionCookie = flag;
     }
 }

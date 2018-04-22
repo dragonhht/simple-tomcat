@@ -4,8 +4,10 @@ import hht.dragon.server.tomcat.Processor.ServletDoProcessor;
 import hht.dragon.server.tomcat.Processor.StaticResourceDoProcessor;
 import hht.dragon.server.tomcat.request.Request;
 import hht.dragon.server.tomcat.response.Response;
+import hht.dragon.server.tomcat.utils.RequestUtil;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -162,9 +164,20 @@ public class HttpProcesser {
             String value = header.getValue();
             request.addHeader(name, value);
 
+            // 保存cookie
             if (name.equals("cookie")) {
 
-                // TODO 保存cookie
+                Cookie[] cookies = RequestUtil.parseCookieHeader(value);
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("jsessionid")) {
+                        if (!request.isRequestedSessionIdFromCookie()) {
+                            request.setRequestSessionId(cookie.getValue());
+                            request.setRequestedSessionCookie(true);
+                            request.setRequestedSessionURL(false);
+                        }
+                    }
+                    request.addCookie(cookie);
+                }
 
             } else if (name.equals("content-length")) {
                 int n = -1;
