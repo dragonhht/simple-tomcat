@@ -1,10 +1,10 @@
 package hht.dragon.server.tomcat.Processor;
 
 import hht.dragon.server.tomcat.constants.Constants;
-import hht.dragon.server.tomcat.request.Request;
-import hht.dragon.server.tomcat.request.RequestFacade;
-import hht.dragon.server.tomcat.response.Response;
-import hht.dragon.server.tomcat.response.ResponseFacade;
+import hht.dragon.server.tomcat.connector.Request;
+import hht.dragon.server.tomcat.connector.RequestFacade;
+import hht.dragon.server.tomcat.connector.Response;
+import hht.dragon.server.tomcat.connector.ResponseFacade;
 
 import javax.servlet.Servlet;
 import java.io.File;

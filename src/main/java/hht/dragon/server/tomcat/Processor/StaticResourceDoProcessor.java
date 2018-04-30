@@ -1,7 +1,7 @@
 package hht.dragon.server.tomcat.Processor;
 
-import hht.dragon.server.tomcat.request.Request;
-import hht.dragon.server.tomcat.response.Response;
+import hht.dragon.server.tomcat.connector.Request;
+import hht.dragon.server.tomcat.connector.Response;
 
 /**
  * 静态文件处理.

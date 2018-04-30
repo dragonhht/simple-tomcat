@@ -2,8 +2,6 @@ package hht.dragon.server.tomcat.connector;
 
 import hht.dragon.server.tomcat.Processor.ServletDoProcessor;
 import hht.dragon.server.tomcat.Processor.StaticResourceDoProcessor;
-import hht.dragon.server.tomcat.request.Request;
-import hht.dragon.server.tomcat.response.Response;
 import hht.dragon.server.tomcat.utils.RequestUtil;
 
 import javax.servlet.ServletException;

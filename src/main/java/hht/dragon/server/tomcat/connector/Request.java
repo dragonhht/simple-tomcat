@@ -1,4 +1,6 @@
-package hht.dragon.server.tomcat.request;
+package hht.dragon.server.tomcat.connector;
+
+import hht.dragon.server.tomcat.utils.ParameterMap;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -33,6 +35,10 @@ public class Request implements HttpServletRequest {
     private String contentType;
     private int contentLength;
 
+    /** 控制参数是否写入. */
+    private boolean parsed = false;
+    private ParameterMap parameters;
+
     public Request(InputStream input) {
         this.input = input;
     }
@@ -56,6 +62,23 @@ public class Request implements HttpServletRequest {
         synchronized (cookies) {
             cookies.add(cookie);
         }
+    }
+
+    protected void parseParameters() {
+        if (parsed) return;
+
+        ParameterMap results = parameters;
+        if (results == null)
+            results = new ParameterMap();
+        results.setLocked(false);
+        String encoding = getCharacterEncoding();
+        if (encoding == null)
+            encoding = "ISO-8859-1";
+
+        // 解析uri中的参数
+        String queryString = getQueryString();
+
+
     }
 
     @Override

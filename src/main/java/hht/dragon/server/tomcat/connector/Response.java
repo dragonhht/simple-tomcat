@@ -1,6 +1,6 @@
-package hht.dragon.server.tomcat.response;
+package hht.dragon.server.tomcat.connector;
 
-import hht.dragon.server.tomcat.request.Request;
+import hht.dragon.server.tomcat.connector.Request;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.ServletResponse;
