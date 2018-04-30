@@ -1,6 +1,7 @@
 package hht.dragon.server.tomcat.utils;
 
 import javax.servlet.http.Cookie;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +46,27 @@ public class RequestUtil {
             }
         }
         return cookies.toArray(new Cookie[cookies.size()]);
+    }
+
+    /**
+     * 解析uri中的参数.
+     * @param result 用于存放获取到的参数
+     * @param queryString uri中的参数信息
+     * @param encoding 编码
+     */
+    public static void parseParameters(ParameterMap result, String queryString, String encoding)
+                        throws UnsupportedEncodingException {
+        // TODO 解析uri中的参数
+    }
+
+    /**
+     * 解析post请求的参数.
+     * @param result 用于存放获取到的参数
+     * @param buf 含有参信息的byte数组
+     * @param encoding 编码
+     */
+    public static void parseParameters(ParameterMap result, byte[] buf, String encoding) {
+        // TODO 解析post请求的参数
     }
 
 }

@@ -1,13 +1,11 @@
 package hht.dragon.server.tomcat.connector;
 
 import hht.dragon.server.tomcat.utils.ParameterMap;
+import hht.dragon.server.tomcat.utils.RequestUtil;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.security.Principal;
 import java.util.*;
 
@@ -39,6 +37,9 @@ public class Request implements HttpServletRequest {
     private boolean parsed = false;
     private ParameterMap parameters;
 
+    private BufferedReader reader;
+    private ServletInputStream stream;
+
     public Request(InputStream input) {
         this.input = input;
     }
@@ -64,6 +65,9 @@ public class Request implements HttpServletRequest {
         }
     }
 
+    /**
+     * 解析参数.
+     */
     protected void parseParameters() {
         if (parsed) return;
 
@@ -77,8 +81,50 @@ public class Request implements HttpServletRequest {
 
         // 解析uri中的参数
         String queryString = getQueryString();
+        try {
+            RequestUtil.parseParameters(results, queryString, encoding);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
+        // post请求中的参数解析(表单数据)
+        String contentType = getContentType();
+        if (contentType == null)
+            contentType = "";
+        int index = contentType.indexOf(';');
+        if (index >= 0) {
+            contentType = contentType.substring(0, index).trim();
+        } else {
+            contentType = contentType.trim();
+        }
+        if ("POST".equals(getMethod()) && getContentLength() > 0
+                && "application/x-www-form-urlencoded".equals(contentType)) {
+            try {
+                int max = getContentLength();
+                int len = 0;
+                byte[] buf = new byte[getContentLength()];
+                ServletInputStream sis = getInputStream();
+                // 将内容放入byte数组内
+                while (len < max) {
+                    int next = sis.read(buf, len, max - len);
+                    if (next < 0)
+                        break;
+                    len += next;
+                }
+                sis.close();
+                if (len < max)
+                    throw new RuntimeException("Content length mismatch");
+                RequestUtil.parseParameters(results, buf, encoding);
+            } catch (UnsupportedEncodingException ue) {
+                ue.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException("Content read fail");
+            }
+        }
 
+        results.setLocked(true);
+        parsed = true;
+        parameters = results;
     }
 
     @Override
@@ -278,27 +324,56 @@ public class Request implements HttpServletRequest {
 
     @Override
     public ServletInputStream getInputStream() throws IOException {
-        return null;
+
+        if (reader != null)
+            throw new IllegalStateException("getInputStream has been called");
+
+        if (stream == null)
+            stream = createInputStream();
+        return stream;
+    }
+
+    public ServletInputStream createInputStream() {
+        return new RequestStream(this);
+    }
+
+    public InputStream getStream() {
+        return this.input;
     }
 
     @Override
     public String getParameter(String name) {
-        return null;
+        parseParameters();
+        String[] values = (String[]) parameters.get(name);
+        if (values != null) {
+            return values[0];
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
+        parseParameters();
+        // TODO 还要处理
         return null;
     }
 
     @Override
     public String[] getParameterValues(String name) {
-        return new String[0];
+        parseParameters();
+        String[] values = (String[]) parameters.get(name);
+        if (values != null) {
+            return values;
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return null;
+        parseParameters();
+        return parameters;
     }
 
     @Override
@@ -323,7 +398,16 @@ public class Request implements HttpServletRequest {
 
     @Override
     public BufferedReader getReader() throws IOException {
-        return null;
+        if (stream != null)
+            throw new IllegalStateException("getInputStream has been called.");
+        if (reader == null) {
+            String encoding = getCharacterEncoding();
+            if (encoding == null)
+                encoding = "ISO-8859-1";
+            InputStreamReader isr = new InputStreamReader(createInputStream(), encoding);
+            reader = new BufferedReader(isr);
+        }
+        return reader;
     }
 
     @Override
