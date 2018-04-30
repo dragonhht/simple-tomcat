@@ -2,6 +2,7 @@ package hht.dragon.server.tomcat.utils;
 
 import javax.servlet.http.Cookie;
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 /**
@@ -56,7 +57,12 @@ public class RequestUtil {
      */
     public static void parseParameters(ParameterMap result, String queryString, String encoding)
                         throws UnsupportedEncodingException {
-        // TODO 解析uri中的参数
+        queryString = URLDecoder.decode(queryString, encoding);
+        String[] kvs = queryString.split("&");
+        for (String kv : kvs) {
+            String[] ss = kv.split("=");
+            result.put(ss[0], ss[1]);
+        }
     }
 
     /**
@@ -65,8 +71,9 @@ public class RequestUtil {
      * @param buf 含有参信息的byte数组
      * @param encoding 编码
      */
-    public static void parseParameters(ParameterMap result, byte[] buf, String encoding) {
-        // TODO 解析post请求的参数
+    public static void parseParameters(ParameterMap result, byte[] buf, String encoding) throws UnsupportedEncodingException {
+        String queryString = new String(buf);
+        parseParameters(result, queryString, encoding);
     }
 
 }

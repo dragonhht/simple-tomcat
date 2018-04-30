@@ -32,6 +32,7 @@ public class Request implements HttpServletRequest {
     private boolean requestedSessionCookie;
     private String contentType;
     private int contentLength;
+    private String characterEncoding;
 
     /** 控制参数是否写入. */
     private boolean parsed = false;
@@ -184,7 +185,7 @@ public class Request implements HttpServletRequest {
 
     @Override
     public String getQueryString() {
-        return null;
+        return this.queryString;
     }
 
     @Override
@@ -299,12 +300,12 @@ public class Request implements HttpServletRequest {
 
     @Override
     public String getCharacterEncoding() {
-        return null;
+        return this.characterEncoding;
     }
 
     @Override
     public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-
+        this.characterEncoding = env;
     }
 
     @Override

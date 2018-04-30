@@ -33,6 +33,7 @@ public class TestServlet extends HttpServlet {
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException {
         System.out.println("运行servlet service");
+        req.setCharacterEncoding("UTF-8");
         Map<String, String[]> map = req.getParameterMap();
         for (String ss : map.keySet()) {
             System.out.println(ss + " : " + map.get(ss));

@@ -84,6 +84,8 @@ public class HttpProcesser {
         // 解析uri中的参数
         int queryIndex = requestLine.indexOf("?");
         if (queryIndex >= 0) {
+            String s = new String(requestLine.uri, queryIndex + 1,
+                    requestLine.uriEnd - queryIndex - 1);
             request.setQueryString(new String(requestLine.uri, queryIndex + 1,
                     requestLine.uriEnd - queryIndex - 1));
             uri = requestLine.getUri(queryIndex);
