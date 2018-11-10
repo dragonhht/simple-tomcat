@@ -1,6 +1,5 @@
-package hht.dragon.server.tomcat.connector;
+package com.github.dragonhht.boostrap.connector;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;

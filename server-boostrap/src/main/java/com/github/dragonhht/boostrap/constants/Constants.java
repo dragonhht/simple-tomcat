@@ -1,4 +1,4 @@
-package hht.dragon.server.tomcat.constants;
+package com.github.dragonhht.boostrap.constants;
 
 import java.io.File;
 

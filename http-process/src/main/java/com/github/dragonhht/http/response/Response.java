@@ -16,12 +16,10 @@ import java.util.Locale;
  */
 final class Response implements HttpServletResponse {
 
-    /** 静态资源文件存放路径. */
-    private static final String WEB_ROOT = "WebRoot";
-
     private OutputStream out;
     private HttpServletRequest request;
     private PrintWriter writer;
+    private ServletOutputStream servletOutputStream;
 
     public Response(OutputStream out) {
         this.out = out;
@@ -29,56 +27,6 @@ final class Response implements HttpServletResponse {
 
     public void setRequest(HttpServletRequest request) {
         this.request = request;
-    }
-
-    public void senStaticResource(String path) {
-        StringBuffer outStr = new StringBuffer();
-        outStr.append("HTTP/1.1 200 OK\n");
-        outStr.append("Content-Type: text/html;charset=UTF-8\n");
-        outStr.append("\r\n");
-        try {
-            out.write(outStr.toString().getBytes());
-            getFile(path);
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 获取静态文件.
-     * @param path 静态文件路径
-     * @throws IOException
-     */
-    private void getFile(String path) {
-        if (path == null) return;
-        path = WEB_ROOT + path;
-        FileInputStream fis = null;
-        try {
-            try {
-                fis = new FileInputStream(path);
-
-            } catch (FileNotFoundException e) {
-                path = WEB_ROOT + "/html/error/404.html";
-                fis = new FileInputStream(path);
-            }
-
-            int len = 0;
-            byte[] buffer = new byte[1024];
-            while ((len = fis.read(buffer)) != -1) {
-                out.write(buffer, 0, len);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     @Override
@@ -93,7 +41,11 @@ final class Response implements HttpServletResponse {
 
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        return null;
+        if (this.servletOutputStream != null) {
+            return this.servletOutputStream;
+        }
+        this.servletOutputStream = new ResponseOutputStream(this.out);
+        return this.servletOutputStream;
     }
 
     @Override

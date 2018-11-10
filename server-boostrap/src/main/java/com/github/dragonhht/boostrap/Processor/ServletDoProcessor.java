@@ -1,12 +1,10 @@
-package hht.dragon.server.tomcat.Processor;
+package com.github.dragonhht.boostrap.Processor;
 
-import hht.dragon.server.tomcat.constants.Constants;
-import hht.dragon.server.tomcat.connector.Request;
-import hht.dragon.server.tomcat.connector.RequestFacade;
-import hht.dragon.server.tomcat.connector.Response;
-import hht.dragon.server.tomcat.connector.ResponseFacade;
+import com.github.dragonhht.boostrap.constants.Constants;
 
 import javax.servlet.Servlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +19,7 @@ import java.net.URLStreamHandler;
  */
 public class ServletDoProcessor implements HttpDoProcessor {
     @Override
-    public void process(Request request, Response response) {
+    public void process(HttpServletRequest request, HttpServletResponse response) {
         String uri = request.getRequestURI();
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
@@ -48,10 +46,8 @@ public class ServletDoProcessor implements HttpDoProcessor {
         Servlet servlet = null;
 
         try {
-            RequestFacade requestFacade = new RequestFacade(request);
-            ResponseFacade responseFacade = new ResponseFacade(response);
             servlet = (Servlet) myClass.newInstance();
-            servlet.service(requestFacade, responseFacade);
+            servlet.service(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }
