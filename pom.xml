@@ -6,7 +6,10 @@
     <groupId>com.github.dragonhht</groupId>
     <artifactId>simple-tomcat</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <modules>
+        <module>http-process</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <name>simple-tomcat</name>
     <description>简易Tomcat</description>
