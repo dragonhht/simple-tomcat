@@ -1,10 +1,12 @@
 package com.github.dragonhht.boostrap.connector;
 
+import com.github.dragonhht.boostrap.container.Container;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Vector;
 
 /**
  * 连接器.
@@ -14,14 +16,21 @@ import java.net.Socket;
  * Date: 2018/4/20
  */
 @Slf4j
-public class HttpConnector implements Runnable {
+public class Connector implements Runnable {
+
+    private Vector<Container> containers = new Vector<>();
 
     private boolean isStoped;
+    private int port = 8080;
     /** 请求协议. */
     private String scheme = "http";
 
     public String getScheme() {
         return scheme;
+    }
+
+    public Connector(int port) {
+        this.port = port;
     }
 
     /**
@@ -30,7 +39,6 @@ public class HttpConnector implements Runnable {
     @Override
     public void run() {
         ServerSocket server = null;
-        int port = 8080;
         try {
             server = new ServerSocket(port);
             log.info("服务启动，端口为： " + port);
@@ -43,13 +51,19 @@ public class HttpConnector implements Runnable {
             Socket client;
             try {
                 client = server.accept();
+                Container container = new Container();
+                containers.add(container);
+                container.start(client);
             } catch (IOException e) {
                 log.info("请求出错: ", e);
-               continue;
             }
-            HttpProcesser processer = new HttpProcesser();
-            processer.process(client);
         }
+        try {
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        log.info("服务器已关闭");
     }
 
     /**
@@ -58,5 +72,19 @@ public class HttpConnector implements Runnable {
     public void start() {
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    /**
+     * 停止监听客户端.
+     */
+    public void stop() {
+        this.isStoped = true;
+        try (Socket socket = new Socket("localhost", port)) {
+            for (Container container : containers) {
+                container.stop();
+            }
+        } catch (IOException e) {
+            log.error("停止请求监听服务出错", e);
+        }
     }
 }
