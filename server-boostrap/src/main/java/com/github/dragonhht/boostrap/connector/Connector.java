@@ -51,9 +51,11 @@ public class Connector implements Runnable {
             Socket client;
             try {
                 client = server.accept();
-                Container container = new Container();
-                containers.add(container);
-                container.start(client);
+                if (!isStoped) {
+                    Container container = new Container();
+                    containers.add(container);
+                    container.start(client);
+                }
             } catch (IOException e) {
                 log.info("请求出错: ", e);
             }
