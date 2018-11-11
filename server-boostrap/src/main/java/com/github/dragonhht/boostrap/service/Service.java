@@ -1,8 +1,8 @@
 package com.github.dragonhht.boostrap.service;
 
 
-import com.github.dragonhht.boostrap.connector.Connector;
-import com.github.dragonhht.boostrap.container.Container;
+import com.github.dragonhht.boostrap.connector.ComponentConnector;
+import com.github.dragonhht.boostrap.container.ComponentEngine;
 
 import java.util.Vector;
 
@@ -14,8 +14,8 @@ import java.util.Vector;
  */
 public final class Service implements ComponentService {
 
-    private final Vector<Connector> connectors = new Vector<>();
-    private Container container;
+    private final Vector<ComponentConnector> connectors = new Vector<>();
+    private ComponentEngine engine;
 
     @Override
     public void init() {
@@ -26,7 +26,7 @@ public final class Service implements ComponentService {
      * 启动服务.
      */
     public void start() {
-        for (Connector connector : connectors) {
+        for (ComponentConnector connector : connectors) {
             connector.start();
         }
     }
@@ -35,7 +35,7 @@ public final class Service implements ComponentService {
      * 停止服务.
      */
     public void stop() {
-        for (Connector connector : connectors) {
+        for (ComponentConnector connector : connectors) {
             connector.stop();
         }
     }
@@ -46,12 +46,18 @@ public final class Service implements ComponentService {
     }
 
     @Override
-    public void addConnector(Connector connector) {
+    public void addConnector(ComponentConnector connector) {
+        connector.setService(this);
         this.connectors.add(connector);
     }
 
     @Override
-    public void setContainer(Container container) {
-        this.container = container;
+    public void setEngine(ComponentEngine componentEngine) {
+        this.engine = componentEngine;
+    }
+
+    @Override
+    public ComponentEngine getEngine() {
+        return this.engine;
     }
 }

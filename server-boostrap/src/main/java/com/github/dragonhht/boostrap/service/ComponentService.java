@@ -1,8 +1,8 @@
 package com.github.dragonhht.boostrap.service;
 
 import com.github.dragonhht.boostrap.component.ServiceLifecycle;
-import com.github.dragonhht.boostrap.connector.Connector;
-import com.github.dragonhht.boostrap.container.Container;
+import com.github.dragonhht.boostrap.connector.ComponentConnector;
+import com.github.dragonhht.boostrap.container.ComponentEngine;
 
 /**
  * Service接口.
@@ -16,8 +16,10 @@ public interface ComponentService extends ServiceLifecycle {
      * 添加Connector.
      * @param connector
      */
-    void addConnector(Connector connector);
+    void addConnector(ComponentConnector connector);
 
-    void setContainer(Container container);
+    void setEngine(ComponentEngine componentEngine);
+
+    ComponentEngine getEngine();
 
 }

@@ -10,7 +10,7 @@ import java.net.Socket;
  * @author: huang
  * @Date: 18-11-11
  */
-public class Container implements Runnable {
+public class Engine implements Runnable, ComponentEngine {
 
     private Socket client;
 
@@ -20,10 +20,16 @@ public class Container implements Runnable {
         processer.process(client);
     }
 
+    @Override
+    public void init() {
+
+    }
+
     /**
      * 启动请求处理.
      * @param client 客户端连接
      */
+    @Override
     public void start(Socket client) {
         this.client = client;
         new Thread(this).start();
@@ -32,7 +38,13 @@ public class Container implements Runnable {
     /**
      * 停止请求处理.
      */
+    @Override
     public void stop() {
         // TODO 停止
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

@@ -1,6 +1,7 @@
 package com.github.dragonhht.boostrap.connector;
 
-import com.github.dragonhht.boostrap.container.Container;
+import com.github.dragonhht.boostrap.container.ComponentEngine;
+import com.github.dragonhht.boostrap.service.ComponentService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -16,9 +17,10 @@ import java.util.Vector;
  * Date: 2018/4/20
  */
 @Slf4j
-public class Connector implements Runnable {
+public class Connector implements Runnable, ComponentConnector {
 
-    private Vector<Container> containers = new Vector<>();
+    private Vector<ComponentEngine> componentEngines = new Vector<>();
+    private ComponentService service;
 
     private boolean isStoped;
     private int port = 8080;
@@ -52,9 +54,8 @@ public class Connector implements Runnable {
             try {
                 client = server.accept();
                 if (!isStoped) {
-                    Container container = new Container();
-                    containers.add(container);
-                    container.start(client);
+                    ComponentEngine engine = this.service.getEngine();
+                    engine.start(client);
                 }
             } catch (IOException e) {
                 log.info("请求出错: ", e);
@@ -68,9 +69,15 @@ public class Connector implements Runnable {
         log.info("服务器已关闭");
     }
 
+    @Override
+    public void init() {
+
+    }
+
     /**
      * 服务启动.
      */
+    @Override
     public void start() {
         Thread thread = new Thread(this);
         thread.start();
@@ -79,14 +86,30 @@ public class Connector implements Runnable {
     /**
      * 停止监听客户端.
      */
+    @Override
     public void stop() {
         this.isStoped = true;
         try (Socket socket = new Socket("localhost", port)) {
-            for (Container container : containers) {
-                container.stop();
+            for (ComponentEngine componentEngine : componentEngines) {
+                componentEngine.stop();
             }
         } catch (IOException e) {
             log.error("停止请求监听服务出错", e);
         }
+    }
+
+    @Override
+    public void setService(ComponentService service) {
+        this.service = service;
+    }
+
+    @Override
+    public ComponentService getService() {
+        return this.service;
+    }
+
+    @Override
+    public void destroy() {
+
     }
 }

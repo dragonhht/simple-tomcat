@@ -1,6 +1,9 @@
 package com.github.dragonhht.boostrap.server;
 
+import com.github.dragonhht.boostrap.connector.ComponentConnector;
 import com.github.dragonhht.boostrap.connector.Connector;
+import com.github.dragonhht.boostrap.container.ComponentEngine;
+import com.github.dragonhht.boostrap.container.Engine;
 import com.github.dragonhht.boostrap.service.ComponentService;
 import com.github.dragonhht.boostrap.service.Service;
 
@@ -42,8 +45,10 @@ public class Server implements ComponentServer {
 
     public static void main(String[] args) {
         Server server = new Server();
-        Connector connector = new Connector(8080);
+        ComponentConnector connector = new Connector(8080);
+        ComponentEngine engine = new Engine();
         Service service = new Service();
+        service.setEngine(engine);
         service.addConnector(connector);
         server.addService(service);
         server.start();
