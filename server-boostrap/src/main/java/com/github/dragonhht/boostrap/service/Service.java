@@ -25,6 +25,7 @@ public final class Service implements ComponentService {
     /**
      * 启动服务.
      */
+    @Override
     public void start() {
         for (ComponentConnector connector : connectors) {
             connector.start();
@@ -34,6 +35,7 @@ public final class Service implements ComponentService {
     /**
      * 停止服务.
      */
+    @Override
     public void stop() {
         for (ComponentConnector connector : connectors) {
             connector.stop();

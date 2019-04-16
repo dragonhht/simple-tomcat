@@ -9,6 +9,7 @@
     <modules>
         <module>http-process</module>
         <module>service-boostrap</module>
+        <module>netty-server</module>
     </modules>
     <packaging>pom</packaging>
 
