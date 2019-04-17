@@ -1,6 +1,7 @@
 package com.github.dragonhht.process.handler
 
 import com.github.dragonhht.handler.RequestHandler
+import com.github.dragonhht.http.servlet.Request
 import io.netty.channel.ChannelInitializer
 import io.netty.channel.socket.SocketChannel
 import io.netty.handler.codec.http.HttpObjectAggregator
