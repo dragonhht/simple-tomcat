@@ -12,9 +12,9 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit
 @XStreamAlias("Service")
 class Service {
     @XStreamImplicit(itemFieldName = "Engine")
-    private var engines: MutableList<Engine> = mutableListOf()
+    var engines: MutableList<Engine> = mutableListOf()
     @XStreamImplicit(itemFieldName = "Connector")
-    private var connectors: MutableList<Connector> = mutableListOf()
+    var connectors: MutableList<Connector> = mutableListOf()
 
     override fun toString(): String {
         return "Service(engines=\n$engines, connectors=\n$connectors)"

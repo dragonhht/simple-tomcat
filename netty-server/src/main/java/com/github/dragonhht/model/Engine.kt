@@ -13,13 +13,13 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit
 @XStreamAlias("Engine")
 class Engine {
     @XStreamAsAttribute
-    private var name: String = "netty-tomcat"
+    var name: String = "netty-tomcat"
     @XStreamAsAttribute
-    private var defaultHost: String = "localhost"
+    var defaultHost: String = "localhost"
     @XStreamImplicit(itemFieldName = "Realm")
-    private var realms: MutableList<Realm> = mutableListOf()
+    var realms: MutableList<Realm> = mutableListOf()
     @XStreamImplicit(itemFieldName = "Host")
-    private var hosts: MutableList<Host> = mutableListOf()
+    var hosts: MutableList<Host> = mutableListOf()
 
     override fun toString(): String {
         return "Engine(name='$name', defaultHost='$defaultHost', realms=\n$realms, hosts=\n$hosts)"

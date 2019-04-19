@@ -16,7 +16,7 @@ class XmlTest{
     @Test
     fun testParse() {
         val filePath = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\netty-server\\src\\main\\resources\\conf\\server.xml"
-        //println(XmlUtil.INSTANCE.parse(filePath, Server::class.java))
+        //println(XmlUtil.INSTANCE.parse(filePath, Bootstrap::class.java))
 
         val xstream = XStream(DomDriver());//创建Xstram对象
         xstream.autodetectAnnotations(true)

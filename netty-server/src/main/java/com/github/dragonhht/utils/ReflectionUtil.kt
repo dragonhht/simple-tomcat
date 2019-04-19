@@ -103,4 +103,14 @@ enum class ReflectionUtil {
         val parameter = method.getParameters()[0]
         return method.getParameters()
     }
+
+    /**
+     * 将对象强转成指定的类型.
+     * @param targetCast: 转换后的类型
+     * @param obj: 需转换的对象
+     * @return 转换后的对象
+     */
+    fun<T> castObject(targetCast: Class<T>, obj: Any): T {
+        return targetCast.cast(obj)
+    }
 }

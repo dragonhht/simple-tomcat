@@ -1,12 +1,11 @@
 package com.github.dragonhht.model
 
-import com.github.dragonhht.utils.annotations.XmlAttribute
 import com.thoughtworks.xstream.annotations.XStreamAlias
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 import com.thoughtworks.xstream.annotations.XStreamImplicit
 
 /**
- * Server.xml配置的对应实体.
+ * Bootstrap.xml配置的对应实体.
  *
  * @author: huang
  * @Date: 2019-4-17
@@ -15,19 +14,19 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit
 class Server {
 
     @XStreamAsAttribute
-    private var port: String = ""
+    var port: Int = 0
 
     @XStreamAsAttribute
     var shutdown: String? = null
 
     @XStreamImplicit(itemFieldName = "Listener")
-    private var listeners: MutableList<Listener> = mutableListOf()
+    var listeners: MutableList<Listener> = mutableListOf()
 
     @XStreamImplicit(itemFieldName = "Service")
-    private var services: MutableList<Service> = mutableListOf()
+    var services: MutableList<Service> = mutableListOf()
 
     override fun toString(): String {
-        return "Server(port='$port', shutdown=$shutdown, listeners=\n$listeners, services=\n$services)"
+        return "Bootstrap(port='$port', shutdown=$shutdown, listeners=\n$listeners, services=\n$services)"
     }
 
 

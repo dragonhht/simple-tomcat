@@ -1,6 +1,5 @@
 package com.github.dragonhht.model
 
-import com.github.dragonhht.utils.annotations.XmlModel
 import com.thoughtworks.xstream.annotations.XStreamAlias
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 
@@ -14,7 +13,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 class Listener {
 
     @XStreamAsAttribute
-    private var className: String? = null
+    var className: String? = null
 
     override fun toString(): String {
         return "Listener(className=$className)"

@@ -12,9 +12,9 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 @XStreamAlias("Context")
 class Context {
     @XStreamAsAttribute
-    private var docBase: String? = null
+    var docBase: String? = null
     @XStreamAsAttribute
-    private var path: String? = null
+    var path: String? = null
 
     override fun toString(): String {
         return "Context(docBase=$docBase, path=$path)"

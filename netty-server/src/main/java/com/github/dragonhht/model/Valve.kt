@@ -12,15 +12,15 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute
 @XStreamAlias("Valve")
 class Valve {
     @XStreamAsAttribute
-    private var className: String? = null
+    var className: String? = null
     @XStreamAsAttribute
-    private var directory: String? = null
+    var directory: String? = null
     @XStreamAsAttribute
-    private var prefix: String? = null
+    var prefix: String? = null
     @XStreamAsAttribute
-    private var suffix: String? = null
+    var suffix: String? = null
     @XStreamAsAttribute
-    private var pattern: String? = null
+    var pattern: String? = null
 
     override fun toString(): String {
         return "Valve(className=$className, directory=$directory, prefix=$prefix, suffix=$suffix, pattern=$pattern)"

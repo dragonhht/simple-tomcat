@@ -13,17 +13,17 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit
 @XStreamAlias("Host")
 class Host {
     @XStreamAsAttribute
-    private var name: String? = null
+    var name: String? = null
     @XStreamAsAttribute
-    private var appBase: String? = null
+    var appBase: String? = null
     @XStreamAsAttribute
-    private var unpackWARs: String? = null
+    var unpackWARs: String? = null
     @XStreamAsAttribute
-    private var autoDeploy: Boolean = false
+    var autoDeploy: Boolean = false
     @XStreamImplicit(itemFieldName = "Valve")
-    private var valves: MutableList<Valve> = mutableListOf()
+    var valves: MutableList<Valve> = mutableListOf()
     @XStreamImplicit(itemFieldName = "Context")
-    private var contexts: MutableList<Context> = mutableListOf()
+    var contexts: MutableList<Context> = mutableListOf()
 
     override fun toString(): String {
         return "Host(name=$name, appBase=$appBase, unpackWARs=$unpackWARs, autoDeploy=$autoDeploy, valves=\n$valves, contexts=\n$contexts)"
