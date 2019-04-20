@@ -1,10 +1,11 @@
 package com.github.dragonhht.classloader
 
 import org.slf4j.LoggerFactory
-import java.io.*
-import java.net.URL
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
 import java.net.URLClassLoader
-import java.net.URLStreamHandler
 import java.nio.ByteBuffer
 import java.nio.channels.Channels
 import java.nio.channels.FileChannel
@@ -27,6 +28,8 @@ class MyAppClassLoader: ClassLoader {
 
     private var classPath: String
 
+    private val classMap: MutableMap<String, Class<*>> = mutableMapOf()
+
     constructor(classPath: String): super() {
         this.classPath = classPath
     }
@@ -38,13 +41,18 @@ class MyAppClassLoader: ClassLoader {
     /**
      * 记载classPath下的指定class.
      */
-    override public fun findClass(className: String): Class<*> {
+    override public fun findClass(className: String): Class<*>? {
         var filePath = className
         var className = className
         if (filePath.endsWith(CLASS_SUFFIX)) {
             filePath = filePath.substringBeforeLast(CLASS_SUFFIX)
             className = filePath
         }
+
+        if (classMap[className] != null) {
+            return classMap[className]
+        }
+
         filePath = filePath.replace('.', File.separatorChar)
         filePath = classPath + File.separatorChar + filePath + CLASS_SUFFIX
         try {
@@ -80,8 +88,32 @@ class MyAppClassLoader: ClassLoader {
                 findClass(className)
             }
             if (file.name.endsWith(JAR_SUFFIX)) {
-                val jarFile = JarFile(file)
-                loadClassByJar(jarFile, file.absolutePath)
+                /*val jarFile = JarFile(file)
+                loadClassByJar(jarFile, file.absolutePath)*/
+                loadClassByJar(file)
+            }
+        }
+    }
+
+    /**
+     * 加载jar中的class文件到jvm
+     */
+    fun loadClassByJar(file: File) {
+        val jar = JarFile(file)
+        val urlClassLoader = URLClassLoader(arrayOf(file.toURI().toURL()))
+        val jarEntries = jar.entries()
+        while (jarEntries.hasMoreElements()) {
+            val jarEntry = jarEntries.nextElement()
+            val name = jarEntry.name
+            if (name.endsWith(CLASS_SUFFIX)) {
+                var clazz = name.substringBeforeLast(CLASS_SUFFIX).replace("/", ".")
+                try {
+                    this.findClass(clazz)
+                    continue
+                } catch (e: Exception) {}
+                // 加载jar中的的class
+                val clss = urlClassLoader.loadClass(clazz)
+                classMap[clazz] = clss
             }
         }
     }
@@ -102,7 +134,9 @@ class MyAppClassLoader: ClassLoader {
                 } catch (e: Exception) {}
                 // 加载jar中的的class
                 val bytes = getClassByteByJar(jar, jarEntry)
+                println(clazz)
                 this.defineClass(clazz, bytes, 0, bytes.size)
+
                 /*val s = URLClassLoader(arrayOf(URL("file", null, jarPath))).loadClass(clazz)
                 println(clazz)
                 Class.forName(clazz, true, s)*/

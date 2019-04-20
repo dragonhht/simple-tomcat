@@ -49,6 +49,11 @@
             <artifactId>kotlin-reflect</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>0.27.0-eap13</version>
+        </dependency>
 
         <!--dom4j-->
         <dependency>

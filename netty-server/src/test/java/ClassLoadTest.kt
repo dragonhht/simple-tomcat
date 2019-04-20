@@ -10,9 +10,11 @@ import org.junit.Test
 class ClassLoadTest {
     @Test
     fun testClassLoadJar() {
-        val className = "net.minidev.asm.BasicFiledFilter"
-        val classPath = "D:/application/apache-jmeter-5.0/lib"
-        MyAppClassLoader(classPath).loadClassByClassPath()
+        val className = "com.github.dragonhht.framework.handler.DispatcherServlet"
+        val classPath = "C:\\Users\\huang\\.m2\\repository\\com\\github\\dragonhht\\simple-web-framework\\1.0-SNAPSHOT"
+        val classLoader = MyAppClassLoader(classPath)
+        classLoader.loadClassByClassPath()
+        println(Class.forName(className, true, classLoader).name)
     }
 
     @Test
@@ -20,6 +22,6 @@ class ClassLoadTest {
         val className = "com.github.dragonhht.test.servlet.TestServlet"
         val classPath = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\WebRoot\\app"
         val clazz = MyAppClassLoader(classPath).findClass(className)
-        println(clazz.name)
+        println(clazz!!.name)
     }
 }
