@@ -1,5 +1,6 @@
 package com.github.dragonhht
 
+import com.github.dragonhht.classloader.MyURLClassLoader
 import com.github.dragonhht.model.Server
 import com.github.dragonhht.process.handler.HttpServerInitializer
 import com.github.dragonhht.utils.XmlUtil
@@ -17,15 +18,26 @@ import org.slf4j.LoggerFactory
  */
 class Bootstrap {
 
+    companion object {
+        val classLoader = MyURLClassLoader()
+    }
+
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * 初始化.
      */
     fun init(): Server {
-        val filePath = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\netty-server\\src\\main\\resources\\conf\\server.xml"
-
+        val filePath = "netty-server/src/main/resources/conf/server.xml"
         return XmlUtil.INSTANCE.parse(Server::class.java, filePath)
+    }
+
+    /**
+     * 加载外部应用class
+     */
+    private fun loadClass() {
+        val classPath = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\WebRoot"
+        classLoader.loadClassByPath(classPath)
     }
 
     /**

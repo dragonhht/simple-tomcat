@@ -23,9 +23,6 @@ class MyAppClassLoader: ClassLoader {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    private val CLASS_SUFFIX = ".class"
-    private val JAR_SUFFIX = ".jar"
-
     private var classPath: String
 
     private val classMap: MutableMap<String, Class<*>> = mutableMapOf()
@@ -41,11 +38,11 @@ class MyAppClassLoader: ClassLoader {
     /**
      * 记载classPath下的指定class.
      */
-    override public fun findClass(className: String): Class<*>? {
+    public override fun findClass(className: String): Class<*>? {
         var filePath = className
         var className = className
-        if (filePath.endsWith(CLASS_SUFFIX)) {
-            filePath = filePath.substringBeforeLast(CLASS_SUFFIX)
+        if (filePath.endsWith(FileSuffix.CLASS_SUFFIX)) {
+            filePath = filePath.substringBeforeLast(FileSuffix.CLASS_SUFFIX)
             className = filePath
         }
 
@@ -54,7 +51,7 @@ class MyAppClassLoader: ClassLoader {
         }
 
         filePath = filePath.replace('.', File.separatorChar)
-        filePath = classPath + File.separatorChar + filePath + CLASS_SUFFIX
+        filePath = classPath + File.separatorChar + filePath + FileSuffix.CLASS_SUFFIX
         try {
             val bytes = getClassBytes(File(filePath))
             return defineClass(className, bytes, 0, bytes.size)
@@ -80,14 +77,14 @@ class MyAppClassLoader: ClassLoader {
                 loadClassByClassPath(it)
             }
         } else {
-            if (file.name.endsWith(CLASS_SUFFIX)) {
+            if (file.name.endsWith(FileSuffix.CLASS_SUFFIX)) {
                 var className = file.absolutePath
                 className = className.substringAfter(classPath + File.separatorChar)
-                className = className.substringBeforeLast(CLASS_SUFFIX)
+                className = className.substringBeforeLast(FileSuffix.CLASS_SUFFIX)
                 className = className.replace(File.separatorChar, '.')
                 findClass(className)
             }
-            if (file.name.endsWith(JAR_SUFFIX)) {
+            if (file.name.endsWith(FileSuffix.JAR_SUFFIX)) {
                 /*val jarFile = JarFile(file)
                 loadClassByJar(jarFile, file.absolutePath)*/
                 loadClassByJar(file)
@@ -105,8 +102,8 @@ class MyAppClassLoader: ClassLoader {
         while (jarEntries.hasMoreElements()) {
             val jarEntry = jarEntries.nextElement()
             val name = jarEntry.name
-            if (name.endsWith(CLASS_SUFFIX)) {
-                var clazz = name.substringBeforeLast(CLASS_SUFFIX).replace("/", ".")
+            if (name.endsWith(FileSuffix.CLASS_SUFFIX)) {
+                var clazz = name.substringBeforeLast(FileSuffix.CLASS_SUFFIX).replace("/", ".")
                 try {
                     this.findClass(clazz)
                     continue
@@ -126,8 +123,8 @@ class MyAppClassLoader: ClassLoader {
         while (jarEntries.hasMoreElements()) {
             val jarEntry = jarEntries.nextElement()
             val name = jarEntry.name
-            if (name.endsWith(CLASS_SUFFIX)) {
-                var clazz = name.substringBeforeLast(CLASS_SUFFIX).replace("/", ".")
+            if (name.endsWith(FileSuffix.CLASS_SUFFIX)) {
+                var clazz = name.substringBeforeLast(FileSuffix.CLASS_SUFFIX).replace("/", ".")
                 try {
                     this.findClass(clazz)
                     continue
@@ -200,16 +197,4 @@ class MyAppClassLoader: ClassLoader {
             fis?.close()
         }
     }
-}
-
-fun main(args: Array<String>) {
-    //val classPath = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\WebRoot\\app"
-    val className = "com.github.dragonhht.test.Test.class"
-    val classPath = "D:/application/apache-jmeter-5.0/lib"
-    MyAppClassLoader(classPath).loadClassByClassPath()
-    //val className = "com.github.dragonhht.test.servlet.TestServlet.class"
-    /*val clzz = MyAppClassLoader(classPath).loadClass(className)
-    println(clzz.name)*/
-    /*val clzz = URLClassLoader(arrayOf(URL("file", null, classPath))).loadClass("net.minidev.asm.BasicFiledFilter")
-    println(clzz.name)*/
 }

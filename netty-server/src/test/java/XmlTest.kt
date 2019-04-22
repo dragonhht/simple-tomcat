@@ -1,4 +1,5 @@
 import com.github.dragonhht.model.Server
+import com.github.dragonhht.model.web.FilterMap
 import com.github.dragonhht.utils.ReflectionUtil
 import com.thoughtworks.xstream.XStream
 import com.thoughtworks.xstream.io.xml.DomDriver
@@ -29,6 +30,23 @@ class XmlTest{
     fun testReflect() {
         val obj = ReflectionUtil.INSTANCE.newInstance(Server::class.java)
         println(obj)
+    }
+
+    @Test
+    fun testEquals() {
+        val map1 = FilterMap()
+        val map2 = FilterMap()
+        map1.urlPattern = "/*.do"
+        map1.filterName = "test"
+        map2.urlPattern = "/*"
+        map2.filterName = "test"
+        val map = mutableMapOf<FilterMap, String>()
+        map[map1] = "123"
+        map.remove(map1)
+        map[map2] = "4"
+        map.forEach{
+            println("${it.key}, ${it.value}")
+        }
     }
 
 }
