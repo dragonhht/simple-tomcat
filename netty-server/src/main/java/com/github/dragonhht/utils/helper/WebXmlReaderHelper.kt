@@ -22,6 +22,7 @@ object WebXmlReaderHelper {
     var saxReader = SAXReader()
 
     private val filterElements = listOf("filter", "filter-mapping")
+    private val servletElements = listOf("servlet", "servlet-mapping")
 
     fun read(filePath: String): WebApp {
         val webApp = WebApp()
@@ -39,6 +40,8 @@ object WebXmlReaderHelper {
                         webApp.contextParam.add(contextParam)
                     }
                     in filterElements -> parseFilter(element, webApp)
+                    "listener" -> parseListener(element, webApp)
+                    in servletElements -> parseServlet(element, webApp)
                 }
             }
         } catch (e: DocumentException) {
@@ -75,7 +78,6 @@ object WebXmlReaderHelper {
                     webApp.filters[map] = filter
                 }
                 "url-pattern" -> {
-                    // TODO 存在问题
                     webApp.filters.remove(map)
                     map.urlPattern = element.textTrim
                     webApp.filters[map] = filter
@@ -86,6 +88,48 @@ object WebXmlReaderHelper {
                     parseParam(element, param)
                     filter.initParams.add(param)
                 }
+            }
+        }
+    }
+
+    private fun parseListener(ele: Element, webApp: WebApp) {
+        val listener = Listener()
+        ele.elements().forEach {
+            val element = it as Element
+            val name = element.name
+            // TODO 还有其他标签
+            when(name) {
+                "listener-class" -> listener.listenerClass = element.textTrim
+            }
+            webApp.listeners.add(listener)
+        }
+    }
+
+    private fun parseServlet(ele: Element, webApp: WebApp) {
+        val map = ServletMap()
+        var servlet = Servlet()
+        ele.elements().forEach {
+            val element = it as Element
+            val name = element.name
+            when(name) {
+                "servlet-name" -> {
+                    map.servletName = element.textTrim
+                    val s = webApp.servlets[map]
+                    if (s !== null) servlet = s
+                    webApp.servlets[map] = servlet
+                }
+                "url-pattern" -> {
+                    webApp.servlets.remove(map)
+                    map.urlPattern = element.textTrim
+                    webApp.servlets[map] = servlet
+                }
+                "servlet-class" -> servlet.servletClass = element.textTrim
+                "init-param" -> {
+                    val param = InitParam()
+                    parseParam(element, param)
+                    servlet.initParams.add(param)
+                }
+                "load-on-startup" -> servlet.loadOnStartup = element.textTrim
             }
         }
     }

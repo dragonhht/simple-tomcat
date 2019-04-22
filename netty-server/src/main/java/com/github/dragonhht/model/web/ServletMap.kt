@@ -14,5 +14,19 @@ class ServletMap {
         return "ServletMap(servletName=$servletName, urlPattern=$urlPattern)"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other is ServletMap) {
+            if (this.servletName == other.servletName) {
+                return true
+            }
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        var result = 0x002
+        result = result * 31 + servletName.hashCode()
+        return result
+    }
 
 }

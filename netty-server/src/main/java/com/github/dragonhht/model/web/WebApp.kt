@@ -10,11 +10,11 @@ class WebApp {
     var displayName: String? = null
     var contextParam: MutableList<ContextParam> = mutableListOf()
     var filters: MutableMap<FilterMap, Filter> = mutableMapOf()
-    var listenerClass: MutableList<String> = mutableListOf()
+    var listeners: MutableList<Listener> = mutableListOf()
     var servlets: MutableMap<ServletMap, Servlet> = mutableMapOf()
 
     override fun toString(): String {
-        return "WebApp(displayName=$displayName, contextParam=$contextParam, filters=$filters, listenerClass=$listenerClass, servlets=$servlets)"
+        return "WebApp(displayName=$displayName, contextParam=$contextParam, filters=$filters, listenerClass=$listeners, servlets=$servlets)"
     }
 
 

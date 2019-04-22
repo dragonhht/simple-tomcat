@@ -12,8 +12,7 @@ class FilterMap {
 
     override fun equals(other: Any?): Boolean {
         if (other is FilterMap) {
-            val obj = other as FilterMap
-            if (this.filterName === obj.filterName) {
+            if (this.filterName == other.filterName) {
                 return true
             }
         }
