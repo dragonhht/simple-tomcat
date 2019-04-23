@@ -52,8 +52,16 @@
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>test</servlet-name>
+		<servlet-class>TestServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>test</servlet-name>
+		<url-pattern>/servlet/TestServlet</url-pattern>
+	</servlet-mapping>
 	
-		<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>test-servlet</servlet-name>
 		<url-pattern>/test/servlet/*</url-pattern>
 	</servlet-mapping>	

@@ -2,8 +2,10 @@ package com.github.dragonhht
 
 import com.github.dragonhht.classloader.MyURLClassLoader
 import com.github.dragonhht.model.Server
+import com.github.dragonhht.model.web.WebApp
 import com.github.dragonhht.process.handler.HttpServerInitializer
 import com.github.dragonhht.utils.XmlUtil
+import com.github.dragonhht.utils.helper.WebXmlReaderHelper
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.nio.NioServerSocketChannel
@@ -20,6 +22,7 @@ class Bootstrap {
 
     companion object {
         val classLoader = MyURLClassLoader()
+        var webApp = WebApp()
     }
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -28,8 +31,15 @@ class Bootstrap {
      * 初始化.
      */
     fun init(): Server {
+        loadWebXml()
+        loadClass()
         val filePath = "netty-server/src/main/resources/conf/server.xml"
         return XmlUtil.INSTANCE.parse(Server::class.java, filePath)
+    }
+
+    fun loadWebXml() {
+        val path = "D:\\my_work_spance\\idea_workspance\\simple-tomcat\\netty-server\\src\\main\\resources\\conf\\web.xml"
+        webApp = WebXmlReaderHelper.read(path)
     }
 
     /**

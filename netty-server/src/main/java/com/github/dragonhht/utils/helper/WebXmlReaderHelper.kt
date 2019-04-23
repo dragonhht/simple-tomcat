@@ -19,7 +19,7 @@ object WebXmlReaderHelper {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     // 创建SAXReader对象
-    var saxReader = SAXReader()
+    private var saxReader = SAXReader()
 
     private val filterElements = listOf("filter", "filter-mapping")
     private val servletElements = listOf("servlet", "servlet-mapping")
